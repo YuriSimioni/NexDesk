@@ -1,5 +1,6 @@
 # Importing necessary libraries
 from app import create_app
+from app.core.env_loader import EnvLoader
 
 # Application initialization
 if __name__ == "__main__":
@@ -9,8 +10,8 @@ if __name__ == "__main__":
     
     # Run application
     app.run(
-        host="127.0.0.1", # Host
-        port=8080,        # Port
-        debug=False,      # Debug mode
+        host=EnvLoader.get("APP_HOST"),             # Host
+        port=EnvLoader.get_int("APP_PORT"),         # Port
+        debug=EnvLoader.get_bool("APP_DEBUG"),      # Debug mode
     )
     
