@@ -17,6 +17,10 @@ def create_app():
         Config
     )
     
+    # Importing models database
+    from app.modules.users.models import User
+    from app.modules.roles.models import Roles
+    
     # Initialization database
     db.init_app(app)
     
