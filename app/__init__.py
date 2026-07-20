@@ -19,7 +19,6 @@ def create_app():
     
     # Importing models database
     from app.modules.users.models import User
-    from app.modules.roles.models import Roles
     
     # Initialization database
     db.init_app(app)
@@ -62,7 +61,6 @@ def create_app():
     @app.route("/")
     def index():
         return "Hello World" # Return 'Hello World'
-        
     
     # Return application
     return app
