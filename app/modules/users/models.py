@@ -3,7 +3,8 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from sqlalchemy.orm import Mapped, mapped_column
 from app.extensions import db
-from sqlalchemy import String, text
+from sqlalchemy import String, text, Enum as SQLEnum
+from app.modules.users.roles import UserRole
 
 
 # Model of users
@@ -68,6 +69,14 @@ class User(db.Model):
     is_active: Mapped[bool] = mapped_column(
         comment="User can access system",
         default=True,
+        nullable=False
+    )
+    
+    # Column ROLE
+    role: Mapped[UserRole] = mapped_column(
+        SQLEnum(UserRole),
+        comment="User role in system",
+        default=UserRole.USER,
         nullable=False
     )
     
