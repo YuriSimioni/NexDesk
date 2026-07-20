@@ -19,6 +19,7 @@ def create_app():
     
     # Importing models database
     from app.modules.users.models import User
+    from app.modules.departments.models import Department, UserDepartment
     
     # Initialization database
     db.init_app(app)

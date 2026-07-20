@@ -89,3 +89,20 @@ class User(db.Model):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+    
+    # `__init__` function for better no-code usage
+    def __init__(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        password_hash: str,
+        is_active: bool = True,
+        **kwargs
+    ) -> None:
+        super().__init__(**kwargs)
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password_hash = password_hash
+        self.is_active = is_active
