@@ -1,7 +1,8 @@
 # Importing necessary libraries
+
 from sqlalchemy.orm import Mapped, mapped_column
 from app.extensions import db
-from sqlalchemy import Enum as SQLEnum, ForeignKey, String, null, text
+from sqlalchemy import Enum as SQLEnum, ForeignKey, String, text, Text
 from uuid import uuid4
 from app.modules.tickets.priority import TicketPriority
 from app.modules.tickets.status import TicketStatus
@@ -39,7 +40,7 @@ class Ticket(db.Model):
     
     # Column DESCRIPTION
     description: Mapped[str] = mapped_column(
-        String(255),
+        Text,
         comment="Description for ticket",
         nullable=False
     )
@@ -68,7 +69,7 @@ class Ticket(db.Model):
     
     # Column CATEGORY_ID
     category_id: Mapped[int] = mapped_column(
-        ForeignKey("ticket_categories.id"),
+        ForeignKey("ticket_categories.id", ondelete="CASCADE"),
         comment="Category ID for ticket"
     )
     
@@ -129,3 +130,75 @@ class Ticket(db.Model):
             self.assigned_to = assigned_to
             self.priority = priority
             self.status = status
+                
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<Ticket {self.id}>"
+
+
+# Model of ticket comment
+class TicketComment(db.Model):
+    
+    # Table name
+    __tablename__ = "ticket_comments"
+    
+    # Column ID
+    id: Mapped[int] = mapped_column(
+        comment="Internal database identifier",
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
+    )
+    
+    # Column TICKET_ID
+    ticket_id: Mapped[int] = mapped_column(
+        ForeignKey("tickets.id", ondelete="CASCADE"),
+        comment="Ticket ID associated with the comment",
+        nullable=False,
+    )
+    
+    # Column USER_ID
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        comment="ID of the user who made the comment",
+        nullable=True
+    )
+    
+    # Column COMMENT
+    comment: Mapped[str] = mapped_column(
+        Text,
+        comment="Comment on the ticket",
+        nullable=False,
+    )
+    
+    # Column IS_INTERNAL
+    is_internal: Mapped[bool] = mapped_column(
+        comment="Internal case comment",
+        nullable=False,
+        default=False
+    )
+    
+    # Column CREATED_AT
+    created_at: Mapped[datetime] = mapped_column(
+        comment="Timestamp when the ticket was created",
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    # `__init__` function for better no-code usage
+    def __init__(
+            self,
+            ticket_id: int,
+            user_id: int,
+            comment: str,
+            is_internal: bool = False,
+            **kwargs
+        ) -> None:
+            super().__init__(**kwargs)
+            self.ticket_id = ticket_id
+            self.user_id = user_id
+            self.comment = comment
+            self.is_internal = is_internal
+            
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<TicketComment {self.id}>"

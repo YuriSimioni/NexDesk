@@ -21,7 +21,8 @@ def create_app():
     from app.modules.users.models import User
     from app.modules.departments.models import Department, UserDepartment
     from app.modules.categories.models import Category
-    from app.modules.tickets.models import Ticket
+    from app.modules.tickets.models import Ticket, TicketComment
+
     # Initialization database
     db.init_app(app)
     

@@ -64,3 +64,7 @@ class Category(db.Model):
         self.name = name
         self.department_id = department_id
         self.color = color
+        
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<Category {self.name}>"

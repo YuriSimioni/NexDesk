@@ -4,14 +4,9 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column
 from app.extensions import db
 from app.modules.departments.roles import DepartmentRole
-from app.modules.users.models import User
 
 # Model of departments
 class Department(db.Model):
-
-    # Return for utility
-    def __repr__(self) -> str:
-        return f"<Departments {self.name}>"
 
     # Table Name
     __tablename__ = "departments"
@@ -52,12 +47,23 @@ class Department(db.Model):
         onupdate=lambda: datetime.now(timezone.utc)
     )
     
+    # `__init__` function for better no-code usage
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        **kwargs         
+        ) -> None:
+        super().__init__(**kwargs)
+        self.name = name
+        self.description = description
+        
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<Department {self.name}>"
     
 # Model of user assignment on department
 class UserDepartment(db.Model):
-    # Return for utility
-    def __repr__(self) -> str:
-        return f"<Departments {self.id}>"
     
     # Table name
     __tablename__ = "user_departments"
@@ -84,8 +90,8 @@ class UserDepartment(db.Model):
         comment="ID of the department",
     )
 
-    # Column USER_ROLE
-    user_role: Mapped[DepartmentRole] = mapped_column(
+    # Column DEPARTMENT_ROLE
+    department_role: Mapped[DepartmentRole] = mapped_column(
         Enum(DepartmentRole),
         default=DepartmentRole.USER,
         nullable=False,
@@ -97,3 +103,19 @@ class UserDepartment(db.Model):
         default=lambda: datetime.now(timezone.utc),
         comment="Timestamp when the user joined the department",
     )
+    
+    # `__init__` function for better no-code usage
+    def __init__(
+        self,
+        user_id: int,
+        department_id: int,
+        department_role: DepartmentRole = DepartmentRole.USER,
+        **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.user_id = user_id
+        self.department_id = department_id
+        self.department_role = department_role
+        
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<User {self.user_id} | Department {self.department_id}>"
