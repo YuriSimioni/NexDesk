@@ -1,18 +1,15 @@
 # Importing necessary libraries
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, validates
 from app.extensions import db
 from sqlalchemy import String, text, Enum as SQLEnum
 from app.modules.users.roles import UserRole
+from flask_login import UserMixin
 
 
 # Model of users
-class User(db.Model):
-
-    # Return for utility
-    def __repr__(self) -> str:
-        return f"<User {self.email}>"
+class User(UserMixin, db.Model):
 
     # Table Name
     __tablename__ = "users"
@@ -65,8 +62,8 @@ class User(db.Model):
         nullable=False
     )
     
-    # Column IS_ACTIVE
-    is_active: Mapped[bool] = mapped_column(
+    # Column ACCOUNT_IS_ACTIVE
+    account_is_active: Mapped[bool] = mapped_column(
         comment="User can access system",
         default=True,
         nullable=False
@@ -99,6 +96,22 @@ class User(db.Model):
         onupdate=lambda: datetime.now(timezone.utc)
     )
     
+    
+    # Validations
+    @validates('email')
+    def validate_email(self, key, email):
+        
+        # Ensures it is not None and converts it to a string.
+        email = (email or "").strip().lower()
+        
+        # Validations raising ValueError
+        if not email:
+            raise ValueError("Email cannot be empty.")
+        if "@" not in email:
+            raise ValueError("Invalid email format (missing '@').")
+        if len(email) > 255:
+            raise ValueError("Email is to long (maximum 255  characters).")
+    
     # `__init__` function for better no-code usage
     def __init__(
         self,
@@ -106,7 +119,7 @@ class User(db.Model):
         last_name: str,
         email: str,
         password_hash: str,
-        is_active: bool = True,
+        account_is_active: bool = True,
         **kwargs
     ) -> None:
         super().__init__(**kwargs)
@@ -114,4 +127,8 @@ class User(db.Model):
         self.last_name = last_name
         self.email = email
         self.password_hash = password_hash
-        self.is_active = is_active
+        self.account_is_active = account_is_active
+        
+    # Return for utility
+    def __repr__(self) -> str:
+        return f"<User {self.email}>"

@@ -1,9 +1,10 @@
 # Importing necessary libraries
-from flask import Flask
+from flask import Flask, redirect, url_for
 from app.core.config import Config
 from app.extensions import db, migrate
 from rich import print
 from sqlalchemy import inspect
+from flask_login import LoginManager
 
 
 # Define function for create application
@@ -11,6 +12,19 @@ def create_app():
     
     # Instance application
     app = Flask(__name__)
+    
+    # Secret key flask
+    app.config["SECRET_KEY"] = Config.SECRET_KEY
+    
+    # Login manager flask login
+    lm = LoginManager(app)
+    lm.login_view = "auth.login" # type: ignore
+    
+    # Getting ID from session flask login
+    @lm.user_loader
+    def user_loader(id: int):
+        user = db.session.query(User).filter_by(id=id).first()
+        return user
     
     # Loading configurations from class Config in 'app/core/config.py'
     app.config.from_object(
@@ -59,11 +73,16 @@ def create_app():
         
         print("\n[bold][green]-> Database is ready for use[/green][/bold]", flush=True)
     
+    # Importing blueprints
+    from app.modules.auth.routes import auth_bp
+    
+    # Register blueprints in app
+    app.register_blueprint(auth_bp)
     
     # Route index
     @app.route("/")
     def index():
-        return "Hello World" # Return 'Hello World'
+        return redirect(url_for("auth.login"))
     
     # Return application
     return app

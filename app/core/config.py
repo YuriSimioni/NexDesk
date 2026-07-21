@@ -20,3 +20,6 @@ class Config:
 
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+class PageTemplate:
+    APP_NAME = "NexDesk"
