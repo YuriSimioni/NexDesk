@@ -98,19 +98,14 @@ class User(UserMixin, db.Model):
     
     
     # Validations
-    @validates('email')
+    @validates("email")
     def validate_email(self, key, email):
-        
-        # Ensures it is not None and converts it to a string.
-        email = (email or "").strip().lower()
-        
-        # Validations raising ValueError
-        if not email:
-            raise ValueError("Email cannot be empty.")
-        if "@" not in email:
-            raise ValueError("Invalid email format (missing '@').")
-        if len(email) > 255:
-            raise ValueError("Email is to long (maximum 255  characters).")
+
+        # Email is not empty
+        if email is None:
+            raise ValueError("Email cannot be None.")
+
+        return email
     
     # `__init__` function for better no-code usage
     def __init__(

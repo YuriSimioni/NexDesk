@@ -1,4 +1,6 @@
 {% extends "base.html" %}
 
-
-<h1>Home</h1>
+{% block content %}
+<h1>Home Welcome {{current_user.first_name}}</h1>
+<a href="{{url_for('auth.logout')}}">Logout</a>
+{% endblock %}
