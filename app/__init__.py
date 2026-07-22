@@ -1,10 +1,14 @@
 # Importing necessary libraries
 from flask import Flask, redirect, url_for
-from app.core.config import Config
-from app.extensions import db, migrate
 from rich import print
 from sqlalchemy import inspect
 from flask_login import LoginManager
+from app.core.config import Config
+from app.extensions import db, migrate
+from app.modules.departments.roles import DepartmentRole
+from app.modules.tickets.priority import TicketPriority
+from app.modules.tickets.status import TicketStatus
+from app.modules.users.roles import UserRole
 
 
 # Define function for create application
@@ -15,6 +19,16 @@ def create_app():
     
     # Secret key flask
     app.config["SECRET_KEY"] = Config.SECRET_KEY
+    
+    # Inject enums for using in Jinja
+    @app.context_processor
+    def inject_enums():
+        return {
+            "UserRole": UserRole,
+            "DepartmentRole": DepartmentRole,
+            "TicketPriority": TicketPriority,
+            "TicketStatus": TicketStatus,
+        }
     
     # Login manager flask login
     lm = LoginManager(app)
@@ -75,10 +89,11 @@ def create_app():
     
     # Importing blueprints
     from app.modules.auth.routes import auth_bp
+    from app.modules.departments.routes import department_bp
     
     # Register blueprints in app
     app.register_blueprint(auth_bp)
-    
+    app.register_blueprint(department_bp)
     # Route index
     @app.route("/")
     def index():

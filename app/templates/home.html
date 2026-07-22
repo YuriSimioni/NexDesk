@@ -3,4 +3,16 @@
 {% block content %}
 <h1>Home Welcome {{current_user.first_name}}</h1>
 <a href="{{url_for('auth.logout')}}">Logout</a>
+
+{% if current_user.role == UserRole.MANAGER or current_user.role == UserRole.ADMINISTRATOR %}
+
+<form style="border: 1px solid black; width: fit-content" action="{{url_for('department.department_create')}}" method="post">
+    <h1>Departments</h1>
+    <input type="text" name="name" placeholder="Name departments" id="name"><br>
+    <input type="text" name="description" placeholder="description departments" id="description"><br>
+    <input type="submit" value="Registrar">
+</form>
+
+{% endif %}
+
 {% endblock %}

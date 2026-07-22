@@ -1,14 +1,16 @@
+# Importing necessary libraries
 from werkzeug.security import check_password_hash
 from datetime import datetime, timezone
 from app.extensions import db
 from app.modules.users.models import User
 
 
+# Class for exception errors
 class AuthServiceError(Exception):
     """Authentication service exception."""
     pass
 
-
+# Class for Auth logic
 class AuthService:
 
     @staticmethod
