@@ -6,13 +6,48 @@
 
 {% if current_user.role == UserRole.MANAGER or current_user.role == UserRole.ADMINISTRATOR %}
 
-<form style="border: 1px solid black; width: fit-content" action="{{url_for('department.department_create')}}" method="post">
-    <h1>Departments</h1>
-    <input type="text" name="name" placeholder="Name departments" id="name"><br>
-    <input type="text" name="description" placeholder="description departments" id="description"><br>
-    <input type="submit" value="Registrar">
-</form>
+<div id="container-departments">
+    <form style="border: 1px solid black; width: fit-content" action="{{url_for('department.department_create')}}" method="post">
+        <h1>New Departments</h1>
+        <input type="text" name="name" placeholder="Name departments" id="name"><br>
+        <input type="text" name="description" placeholder="description departments" id="description"><br>
+        <input type="submit" value="Registrar">
+    </form>
+
+    <table border="3">
+        <caption>Departments List</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if not department_list %}
+            <tr>
+                <td colspan="3" style="text-align: center;">No department register</td>
+            </tr>
+            {% endif %}
+            {% for department in department_list %}
+                <tr>
+                    <td>{{department.name}}</td>
+                    <td>{{department.description}}</td>
+                    <td>
+                        <form action="{{ url_for('department.department_delete', id=department.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endif %}
 
-{% endblock %}
+
+
+{% endblock %} 
+
+

@@ -1,14 +1,16 @@
 # Importing necessary libraries
-from flask import Blueprint, flash, render_template, request
-from sqlalchemy import desc
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import login_required
 from app.core.config import PageTemplate
 from app.modules.departments.services import DepartmentService, DepartmentServiceError
+
 
 # Initialize Blueprint for authentication module
 department_bp = Blueprint("department", __name__)
 
 # ======== LOGIN ==========
-@department_bp.route("/departments/create", methods=["GET", "POST"])
+@department_bp.route("/departments/create", methods=["POST"])
+@login_required
 def department_create():
     """Route responsible for create department."""
     
@@ -37,5 +39,27 @@ def department_create():
             # Return message for user
             flash(f"{e}", "error")
             
-    # Render login page for GET requests
-    return render_template("home.html", app_config=PageTemplate)
+            # Redirect to home
+    return redirect(url_for("auth.home"))
+            
+
+
+@department_bp.route("/department/delete/<int:id>", methods=["POST"])
+def department_delete(id: int):
+    """Route for delete department"""
+    try:
+        # Getting department
+        department_delete = DepartmentService.get_department_by_id(id)
+        
+        # Delete department
+        DepartmentService.delete_department(id)
+        
+        # Return feedback for user
+        flash(f"Department {department_delete.name} has ben exclude")
+     
+    except DepartmentServiceError as e:
+        # Return feedback for user
+        flash(str(e), "error")
+    
+    # Redirect to home
+    return redirect(url_for("auth.home"))
