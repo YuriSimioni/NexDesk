@@ -91,11 +91,14 @@ def create_app():
     from app.modules.auth.routes import auth_bp
     from app.modules.departments.routes import department_bp
     from app.modules.categories.routes import categories_bp
+    from app.modules.users.routes import user_bp
     
     # Register blueprints in app
     app.register_blueprint(auth_bp)
     app.register_blueprint(department_bp)
     app.register_blueprint(categories_bp)
+    app.register_blueprint(user_bp)
+    
     # Route index
     @app.route("/")
     def index():

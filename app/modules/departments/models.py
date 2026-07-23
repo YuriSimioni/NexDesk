@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column
 from app.extensions import db
 from app.modules.departments.roles import DepartmentRole
+from sqlalchemy.orm import relationship
 
 # Model of departments
 class Department(db.Model):
@@ -45,6 +46,13 @@ class Department(db.Model):
         comment="Timestamp when the department was last updated",
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
+    )
+    
+    # Added relationship on department
+    user_departments = relationship(
+        "UserDepartment",
+        back_populates="department",
+        cascade="all, delete-orphan",
     )
     
     # `__init__` function for better no-code usage
@@ -103,6 +111,12 @@ class UserDepartment(db.Model):
         default=lambda: datetime.now(timezone.utc),
         comment="Timestamp when the user joined the department",
     )
+    
+    # Add relationship with table user
+    user = relationship("User", back_populates="user_departments")
+
+    # Add relationship with table department
+    department = relationship("Department", back_populates="user_departments")
     
     # `__init__` function for better no-code usage
     def __init__(

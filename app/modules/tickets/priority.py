@@ -3,9 +3,9 @@ from enum import Enum
 
 # Tickets Priorities
 class TicketPriority(Enum):
-    LOW = "low"
-    NORMAL = "normal"
-    HIGH = "high"
-    URGENT = "urgent"
-    CRITICAL = "critical"
+    LOW = "LOW"
+    NORMAL = "NORMAL"
+    HIGH = "HIGH"
+    URGENT = "URGENT"
+    CRITICAL = "CRITICAL"
     

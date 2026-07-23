@@ -6,6 +6,8 @@ from app.extensions import db
 from sqlalchemy import String, text, Enum as SQLEnum
 from app.modules.users.roles import UserRole
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
+
 
 
 # Model of users
@@ -94,6 +96,15 @@ class User(UserMixin, db.Model):
         comment="Timestamp when the user was last updated",
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
+    )
+    
+    
+    
+    # Added relationship on user
+    user_departments = relationship(
+        "UserDepartment",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
     
     
