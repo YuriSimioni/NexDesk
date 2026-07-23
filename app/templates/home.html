@@ -44,8 +44,53 @@
     </table>
 </div>
 
+
+<hr>
+
 {% endif %}
 
+
+<form style="border: 1px solid black; width: fit-content" action="{{url_for('categories.category_create')}}" method="post">
+        <h1>New Category</h1>
+        <select name="department_id" id="department_id">
+            {% for department in department_list %}
+                <option value="{{department.id}}">{{department.name}}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="name" placeholder="Name departments" id="name"><br>
+        
+        <input type="color" name="color" id="color">
+        <input type="submit" value="Registrar">
+    </form>
+
+    <table border="3">
+        <caption>Category List</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Color</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if not category_list %}
+            <tr>
+                <td colspan="3" style="text-align: center;">No category register</td>
+            </tr>
+            {% endif %}
+            {% for category in category_list %}
+                <tr>
+                    <td>{{category.name}}</td>
+                    <td>{{category.color}}</td>
+                    <td>
+                        <form  action="{{ url_for('categories.category_delete', id=category.id) }}" method="post">
+                            <button style="background: {{category.color}}" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 {% endblock %} 
