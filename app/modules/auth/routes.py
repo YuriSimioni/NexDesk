@@ -3,6 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from app.core.config import PageTemplate
 from app.modules.auth.services import AuthService, AuthServiceError
+from app.modules.categories.services import CategoryService
 from app.modules.departments.services import DepartmentService
 
 # Initialize Blueprint for authentication module
@@ -80,8 +81,9 @@ def home():
     
     # Getting all departments
     all_departments = DepartmentService.get_departments()
+    all_categories = CategoryService.get_categories_by_department(8)
     
-    return render_template("home.html", department_list=all_departments)
+    return render_template("home.html", department_list=all_departments, category_list=all_categories)
 
 
 @auth_bp.route("/logout")
