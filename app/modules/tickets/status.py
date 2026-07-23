@@ -3,9 +3,9 @@ from enum import Enum
 
 # Ticket status
 class TicketStatus(Enum):
-    OPEN = "open"
-    IN_PROGRESS = "in_progress"
-    PENDING = "pending"
-    RESOLVED = "resolved"
-    CLOSED = "closed"
-    CANCELED = "canceled" 
+    OPEN = "OPEN"
+    IN_PROGRESS = "IN_PROGRESS"
+    PENDING = "PENDING"
+    RESOLVED = "RESOLVED"
+    CLOSED = "CLOSED"
+    CANCELED = "CANCELED" 

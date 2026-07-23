@@ -84,10 +84,73 @@
                     <td>{{category.color}}</td>
                     <td>
                         <form  action="{{ url_for('categories.category_delete', id=category.id) }}" method="post">
-                            <button style="background: {{category.color}}" type="submit">Delete</button>
+                            <button  type="submit">Delete</button>
                         </form>
                     </td>
                 </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+<hr>
+
+
+
+
+<form style="border: 1px solid black; width: fit-content" action="{{url_for('user.user_department_add')}}" method="post">
+        <h1>Add User on Department</h1>
+        <select name="user_id" id="user_id">
+            {% for user in user_list %}
+                <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+            {% endfor %}
+        </select>
+        <select name="department_id" id="department_id">
+            {% for department in department_list %}
+                <option value="{{department.id}}">{{department.name}}</option>
+            {% endfor %}
+        </select>
+
+        
+        <select name="role" id="role">
+            {% for item in DepartmentRole %}
+                <option value="{{item.value}}">{{item.value.capitalize()}}</option>
+            {%endfor%}
+        </select>
+        <input type="submit" value="Add">
+    </form>
+
+
+    <table border="3">
+        <caption>User Departments</caption>
+
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if not user_departments %}
+            <tr>
+                <td colspan="3" style="text-align:center;">
+                    User is not registered in any department.
+                </td>
+            </tr>
+            {% endif %}
+
+            {% for item in user_departments %}
+            <tr>
+                <td>{{ item.department.name }}</td>
+                <td>{{ item.department_role.value.capitalize() }}</td>
+                <td>
+                    <form action="{{ url_for('user.department_delete', id=item.id) }}" method="post">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
