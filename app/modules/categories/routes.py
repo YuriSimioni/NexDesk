@@ -1,9 +1,9 @@
 # Importing necessary libraries
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, request, url_for
 from flask_login import login_required
-from sqlalchemy import true
+from app.modules.categories.models import Category
 from app.modules.categories.services import CategoryService, CategoryServiceError
-from app.modules.departments.services import DepartmentService, DepartmentServiceError
+from app.extensions import db
 
 
 # Initialize Blueprint for authentication module
@@ -67,3 +67,25 @@ def category_delete(id: int):
     
     # Redirect to home
     return redirect(url_for("auth.home"))
+
+
+@categories_bp.route('/get_categories/<int:department_id>', methods=['GET'])
+@login_required
+def get_categories_by_department(department_id):
+    """Get categories by department for using in javascript"""
+    try:
+        
+        # Get categories by department
+        categories = db.session.query(Category).filter_by(department_id=department_id).all()
+        
+        # Get categories list
+        categories_list = [{"id": cat.id, "name": cat.name} for cat in categories]
+        
+        # Return list
+        return jsonify(categories_list)
+    
+    except Exception as e:
+        # Return error
+        return jsonify({"error": str(e)}), 500
+    
+    

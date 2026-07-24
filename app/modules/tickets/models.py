@@ -1,12 +1,12 @@
 # Importing necessary libraries
-
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.extensions import db
 from sqlalchemy import Enum as SQLEnum, ForeignKey, String, text, Text
 from uuid import uuid4
 from app.modules.tickets.priority import TicketPriority
 from app.modules.tickets.status import TicketStatus
 from datetime import datetime, timezone
+
 # Model of ticket
 class Ticket(db.Model):
     
@@ -33,7 +33,7 @@ class Ticket(db.Model):
     
     # Column SUBJECT
     subject: Mapped[str] = mapped_column(
-        String(50),
+        String(100),
         comment="Subject ticket",
         nullable=False
     )
@@ -60,18 +60,14 @@ class Ticket(db.Model):
         default=None
     )
     
-    # Column DEPARTMENT_ID
-    department_id: Mapped[int] = mapped_column(
-        ForeignKey("departments.id", ondelete="CASCADE"),
-        comment="Department ID",
-        nullable=False
-    )
-    
     # Column CATEGORY_ID
     category_id: Mapped[int] = mapped_column(
         ForeignKey("ticket_categories.id", ondelete="CASCADE"),
         comment="Category ID for ticket"
     )
+    
+    # Added relation ship
+    category = relationship("Category", backref="tickets")
     
     # Column PRIORITY
     priority: Mapped[TicketPriority] = mapped_column(
@@ -114,7 +110,6 @@ class Ticket(db.Model):
             subject: str,
             description: str,
             requester_id: int,
-            department_id: int,
             category_id: int,
             assigned_to: int | None = None,
             priority: TicketPriority = TicketPriority.NORMAL,
@@ -125,7 +120,6 @@ class Ticket(db.Model):
             self.subject = subject
             self.description = description
             self.requester_id = requester_id
-            self.department_id = department_id
             self.category_id = category_id
             self.assigned_to = assigned_to
             self.priority = priority
@@ -134,7 +128,6 @@ class Ticket(db.Model):
     # Return for utility
     def __repr__(self) -> str:
         return f"<Ticket {self.id}>"
-
 
 # Model of ticket comment
 class TicketComment(db.Model):

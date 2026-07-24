@@ -1,6 +1,6 @@
 # Importing necessary libraries
-from sqlalchemy import ForeignKey, String, false, null
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.extensions import db
 from datetime import datetime, timezone
 
@@ -31,6 +31,9 @@ class Category(db.Model):
         comment="Department ID",
         nullable=False
     )
+    
+    # Added relationship department
+    department = relationship("Department", back_populates="categories")
     
     # Column COLOR
     color: Mapped[str] = mapped_column(
