@@ -1,5 +1,5 @@
 # Importing necessary libraries
-from sqlalchemy import Enum, ForeignKey, String, false, null
+from sqlalchemy import Enum, ForeignKey, String
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column
 from app.extensions import db
@@ -51,6 +51,13 @@ class Department(db.Model):
     # Added relationship on department
     user_departments = relationship(
         "UserDepartment",
+        back_populates="department",
+        cascade="all, delete-orphan",
+    )
+    
+    # Added relationship
+    categories = relationship(
+        "Category",
         back_populates="department",
         cascade="all, delete-orphan",
     )
