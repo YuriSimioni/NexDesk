@@ -1,50 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexDesk | {% block title %}{% endblock title %}</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='global.css')}}">
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>NexDesk | {% block title %}{% endblock title %}</title>
+		<link
+			rel="stylesheet"
+			href="{{url_for('static', filename='global.css')}}"
+		/>
+		{% block head %}{% endblock head %}
+	</head>
+	<body>
+    <script
+			src="https://code.jquery.com/jquery-3.7.1.min.js"
+			integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			crossorigin="anonymous"
+		></script>
+		<div id="background-loader">
+			<div id="loader"></div>
+			<p>Loading...</p>
+		</div>
 
-    <div id="background-loader">
-      <div id="loader">
+		{% with messages = get_flashed_messages(with_categories=true) %} {% if
+		messages %}
+		<div class="flash-messages">
+			{% for category, message in messages %}
+			<div class="alert alert-{{ category }}">{{ message }}</div>
+			{% endfor %}
+		</div>
+		{% endif %} {% endwith %} {% block content %}{% endblock %}
 
-      </div>
-      <p>Loading...</p>
-    </div>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+		<script>
+			$(document).ready(function () {
+				$(".alert").click(function () {
+					$(this).fadeOut("fast", function () {
+						$(this).remove();
+					});
+				});
+				setTimeout(function () {
+					$(".flash-messages").fadeOut(1000, function () {
+						$(this).remove();
+					});
+				}, 3000);
+			});
+		</script>
 
-    {% block content %}{% endblock %}
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-    <script>
-      $(document).ready(function() {
-        $('.alert').click(function() {
-            $(this).fadeOut("fast", function() {
-                $(this).remove();
-            });
-        });
-          setTimeout(function() {
-              $('.flash-messages').fadeOut(1000, function() {
-                  $(this).remove(); 
-              });
-          }, 3000);
-          
-      });
-    </script>
-</body>
+		
+	</body>
 </html>
