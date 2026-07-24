@@ -1,161 +1,330 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1>Home Welcome {{current_user.first_name}}</h1>
 <a href="{{url_for('auth.logout')}}">Logout</a>
 
-{% if current_user.role == UserRole.MANAGER or current_user.role == UserRole.ADMINISTRATOR %}
+{% if current_user.role == UserRole.MANAGER or current_user.role ==
+UserRole.ADMINISTRATOR %}
 
 <div id="container-departments">
-    <form style="border: 1px solid black; width: fit-content" action="{{url_for('department.department_create')}}" method="post">
-        <h1>New Departments</h1>
-        <input type="text" name="name" placeholder="Name departments" id="name"><br>
-        <input type="text" name="description" placeholder="description departments" id="description"><br>
-        <input type="submit" value="Registrar">
-    </form>
+  <form
+    style="border: 1px solid black; width: fit-content"
+    action="{{url_for('department.department_create')}}"
+    method="post"
+  >
+    <h1>New Departments</h1>
+    <input
+      type="text"
+      name="name"
+      placeholder="Name departments"
+      id="name"
+    /><br />
+    <input
+      type="text"
+      name="description"
+      placeholder="description departments"
+      id="description"
+    /><br />
+    <input type="submit" value="Registrar" />
+  </form>
 
-    <table border="3">
-        <caption>Departments List</caption>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if not department_list %}
-            <tr>
-                <td colspan="3" style="text-align: center;">No department register</td>
-            </tr>
-            {% endif %}
-            {% for department in department_list %}
-                <tr>
-                    <td>{{department.name}}</td>
-                    <td>{{department.description}}</td>
-                    <td>
-                        <form action="{{ url_for('department.department_delete', id=department.id) }}" method="post">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table border="3">
+    <caption>
+      Departments List
+    </caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if not department_list %}
+      <tr>
+        <td colspan="3" style="text-align: center">No department register</td>
+      </tr>
+      {% endif %} {% for department in department_list %}
+      <tr>
+        <td>{{department.name}}</td>
+        <td>{{department.description}}</td>
+        <td>
+          <form
+            action="{{ url_for('department.department_delete', id=department.id) }}"
+            method="post"
+          >
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
-
-<hr>
+<hr />
 
 {% endif %}
 
+<form
+  style="border: 1px solid black; width: fit-content"
+  action="{{url_for('categories.category_create')}}"
+  method="post"
+>
+  <h1>New Category</h1>
+  <select name="department_id" id="department_id">
+    {% for department in department_list %}
+    <option value="{{department.id}}">{{department.name}}</option>
+    {% endfor %}
+  </select>
+  <input
+    type="text"
+    name="name"
+    placeholder="Name departments"
+    id="name"
+  /><br />
 
-<form style="border: 1px solid black; width: fit-content" action="{{url_for('categories.category_create')}}" method="post">
-        <h1>New Category</h1>
-        <select name="department_id" id="department_id">
-            {% for department in department_list %}
-                <option value="{{department.id}}">{{department.name}}</option>
-            {% endfor %}
-        </select>
-        <input type="text" name="name" placeholder="Name departments" id="name"><br>
-        
-        <input type="color" name="color" id="color">
-        <input type="submit" value="Registrar">
-    </form>
+  <input type="color" name="color" id="color" />
+  <input type="submit" value="Registrar" />
+</form>
 
-    <table border="3">
-        <caption>Category List</caption>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Color</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if not category_list %}
-            <tr>
-                <td colspan="3" style="text-align: center;">No category register</td>
-            </tr>
-            {% endif %}
-            {% for category in category_list %}
-                <tr>
-                    <td>{{category.name}}</td>
-                    <td>{{category.color}}</td>
-                    <td>
-                        <form  action="{{ url_for('categories.category_delete', id=category.id) }}" method="post">
-                            <button  type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table border="3">
+  <caption>
+    Category List
+  </caption>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Color</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if not category_list %}
+    <tr>
+      <td colspan="3" style="text-align: center">No category register</td>
+    </tr>
+    {% endif %} {% for category in category_list %}
+    <tr>
+      <td>{{category.name}}</td>
+      <td>{{category.color}}</td>
+      <td>
+        <form
+          action="{{ url_for('categories.category_delete', id=category.id) }}"
+          method="post"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
+<hr />
 
-<hr>
+<form
+  style="border: 1px solid black; width: fit-content"
+  action="{{url_for('user.user_department_add')}}"
+  method="post"
+>
+  <h1>Add User on Department</h1>
+  <select name="user_id" id="user_id">
+    {% for user in user_list %}
+    <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+    {% endfor %}
+  </select>
+  <select name="department_id" id="department_id">
+    {% for department in department_list %}
+    <option value="{{department.id}}">{{department.name}}</option>
+    {% endfor %}
+  </select>
 
+  <select name="role" id="role">
+    {% for item in DepartmentRole %}
+    <option value="{{item.value}}">{{item.value.capitalize()}}</option>
+    {%endfor%}
+  </select>
+  <input type="submit" value="Add" />
+</form>
 
+<table border="3">
+  <caption>
+    User Departments
+  </caption>
 
+  <thead>
+    <tr>
+      <th>Department</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
 
-<form style="border: 1px solid black; width: fit-content" action="{{url_for('user.user_department_add')}}" method="post">
-        <h1>Add User on Department</h1>
-        <select name="user_id" id="user_id">
-            {% for user in user_list %}
-                <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
-            {% endfor %}
-        </select>
-        <select name="department_id" id="department_id">
-            {% for department in department_list %}
-                <option value="{{department.id}}">{{department.name}}</option>
-            {% endfor %}
-        </select>
+  <tbody>
+    {% if not user_departments %}
+    <tr>
+      <td colspan="3" style="text-align: center">
+        User is not registered in any department.
+      </td>
+    </tr>
+    {% endif %} {% for item in user_departments %}
+    <tr>
+      <td>{{ item.department.name }}</td>
+      <td>{{ item.department_role.value.capitalize() }}</td>
+      <td>
+        <form
+          action="{{ url_for('user.department_delete', id=item.id) }}"
+          method="post"
+        >
+          <button type="submit">Remove</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
-        
-        <select name="role" id="role">
-            {% for item in DepartmentRole %}
-                <option value="{{item.value}}">{{item.value.capitalize()}}</option>
-            {%endfor%}
-        </select>
-        <input type="submit" value="Add">
-    </form>
+<hr />
 
+<form
+  style="border: 1px solid black; width: fit-content"
+  action="/ticket/create"
+  method="post"
+>
+  <h1>New ticket</h1>
+  <input
+    type="text"
+    name="subject"
+    id="subject"
+    placeholder="Subject"
+    required
+  />
+  <textarea
+    name="description"
+    id="description"
+    placeholder="Describe your issue..."
+    required
+  ></textarea>
 
-    <table border="3">
-        <caption>User Departments</caption>
+  <!-- MUDANÇA AQUI: id único para o departamento do ticket -->
+  <select name="department_id" id="ticket_department_id">
+    <option value="" disabled selected>Select Department</option>
+    <option value="8">Teste</option>
+    <option value="13">Asd</option>
+  </select>
 
-        <thead>
-            <tr>
-                <th>Department</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+  <!-- MUDANÇA AQUI: id único para a categoria do ticket -->
+  <select name="category_id" id="ticket_category_id" required>
+    <option value="" disabled selected>Select Category</option>
+  </select>
 
-        <tbody>
-            {% if not user_departments %}
-            <tr>
-                <td colspan="3" style="text-align:center;">
-                    User is not registered in any department.
-                </td>
-            </tr>
-            {% endif %}
+  <!-- (Resto dos selects de assigned_to e priority continuam iguais) -->
+  <select name="assigned_to" id="assigned_to">
+    <option value="">Unassigned</option>
+    <option selected value="10">Yuri Ribeiro Simioni</option>
+    <option value="11">asd asd</option>
+    <option value="12">dd dd</option>
+  </select>
+  <select name="priority" id="priority">
+    <option value="LOW">Low</option>
+    <option value="NORMAL">Normal</option>
+    <option value="HIGH">High</option>
+    <option value="URGENT">Urgent</option>
+    <option value="CRITICAL">Critical</option>
+  </select>
 
-            {% for item in user_departments %}
-            <tr>
-                <td>{{ item.department.name }}</td>
-                <td>{{ item.department_role.value.capitalize() }}</td>
-                <td>
-                    <form action="{{ url_for('user.department_delete', id=item.id) }}" method="post">
-                        <button type="submit">Remove</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <input type="submit" value="Create Ticket" />
+</form>
 
+<table border="3">
+  <caption>
+    Tickets User
+  </caption>
 
-{% endblock %} 
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Department</th>
+      <th>Category</th>
+      <th>Open at</th>
+      <th>Updated at</th>
+      <th>Closed at</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
 
+  <tbody>
+    {% if not user_tickets %}
+    <tr>
+      <td colspan="8" style="text-align: center">No tickets register</td>
+    </tr>
+    {% endif %} {% for ticket in user_tickets %}
+    <tr>
+      <td>{{ ticket.subject.capitalize() }}</td>
+      <td>{{ ticket.category.department.name }}</td>
+      <td>{{ ticket.category.name }}</td>
+      <td>{{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ ticket.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>
+        {{ ticket.closed_at.strftime('%Y-%m-%d %H:%M') if ticket.closed_at else
+        '-' }}
+      </td>
+      <td>{{ ticket.status.value.capitalize() }}</td>
+      <td>
+        <form
+          action="{{ url_for('ticket.ticket_delete', id=ticket.id) }}"
+          method="post"
+        >
+          <button type="submit">Exclude</button>
+        </form>
+        <form
+          action="{{ url_for('ticket.ticket_close', id=ticket.id) }}"
+          method="post"
+        >
+          <button type="submit">Close</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const departmentSelect = document.getElementById("ticket_department_id");
+    const categorySelect = document.getElementById("ticket_category_id");
+
+    if (departmentSelect && categorySelect) {
+      departmentSelect.addEventListener("change", function () {
+        const departmentId = this.value;
+
+        categorySelect.innerHTML =
+          '<option value="" disabled selected>Select Category</option>';
+
+        if (departmentId) {
+          let baseUrl = "/get_categories_by_department/0";
+          let fetchUrl = baseUrl.replace("0", departmentId);
+
+          fetch(fetchUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error on network: " + response.status);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              data.forEach((category) => {
+                const option = document.createElement("option");
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+              });
+            });
+        }
+      });
+    }
+  });
+</script>
+
+{% endblock %}
