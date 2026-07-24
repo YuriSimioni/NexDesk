@@ -6,7 +6,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 from app.extensions import db
 from app.modules.categories.services import CategoryService
-from app.modules.tickets.models import Ticket
+from app.modules.tickets.models import Ticket, TicketComment
 from app.modules.tickets.priority import TicketPriority
 from app.modules.users.models import User
 from app.modules.users.services import UserService
@@ -79,7 +79,7 @@ class TicketService:
         return ticket
 
     @staticmethod
-    def get_tickets(id: int) -> list[Ticket]:
+    def get_tickets() -> list[Ticket]:
         """Return all tickets"""
         return db.session.query(Ticket).all()
 
@@ -130,3 +130,30 @@ class TicketService:
         # Save changes
         db.session.commit()
         return True
+
+    @staticmethod
+    def add_comment(
+        ticket_id: int, user_id: int, comment: str, is_internal: bool = False
+    ) -> TicketComment:
+        """Add comment on ticket"""
+
+        # Getting ticket and user
+        ticket = TicketService.ticket_exists(ticket_id)
+        user = UserService.user_exists(user_id)
+
+        # Create comment on ticket
+        ticket_comment = TicketComment(
+            ticket_id=ticket.id,
+            user_id=user.id,
+            comment=comment.strip().capitalize(),
+            is_internal=is_internal,
+        )
+
+        # Register on database
+        db.session.add(ticket_comment)
+
+        # Save changes
+        db.session.commit()
+
+        # Return ticket
+        return ticket_comment

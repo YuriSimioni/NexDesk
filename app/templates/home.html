@@ -191,7 +191,9 @@ UserRole.ADMINISTRATOR %}
   action="/ticket/create"
   method="post"
 >
+
   <h1>New ticket</h1>
+
   <input
     type="text"
     name="subject"
@@ -199,6 +201,7 @@ UserRole.ADMINISTRATOR %}
     placeholder="Subject"
     required
   />
+
   <textarea
     name="description"
     id="description"
@@ -206,31 +209,36 @@ UserRole.ADMINISTRATOR %}
     required
   ></textarea>
 
-  <!-- MUDANÇA AQUI: id único para o departamento do ticket -->
+  <!-- Department select -->
   <select name="department_id" id="ticket_department_id">
     <option value="" disabled selected>Select Department</option>
-    <option value="8">Teste</option>
-    <option value="13">Asd</option>
-  </select>
 
-  <!-- MUDANÇA AQUI: id único para a categoria do ticket -->
+    {% for department in department_list %}
+        <option value="{{ department.id }}">
+            {{ department.name }}
+        </option>
+    {% endfor %}
+</select>
+
+  <!-- Category select -->
   <select name="category_id" id="ticket_category_id" required>
     <option value="" disabled selected>Select Category</option>
   </select>
 
-  <!-- (Resto dos selects de assigned_to e priority continuam iguais) -->
+  <!-- User select -->
   <select name="assigned_to" id="assigned_to">
-    <option value="">Unassigned</option>
-    <option selected value="10">Yuri Ribeiro Simioni</option>
-    <option value="11">asd asd</option>
-    <option value="12">dd dd</option>
+    {% for user in user_list %}
+      <option value="{{ user.id }}">
+        {{ user.first_name }} {{ user.last_name }}
+      </option>
+    {% endfor %}
   </select>
+
+  <!-- Priority select -->
   <select name="priority" id="priority">
-    <option value="LOW">Low</option>
-    <option value="NORMAL">Normal</option>
-    <option value="HIGH">High</option>
-    <option value="URGENT">Urgent</option>
-    <option value="CRITICAL">Critical</option>
+    {% for status in TicketPriority %}
+        <option value="{{ status.value }}">{{ status.name | title }}</option>
+    {% endfor %}
   </select>
 
   <input type="submit" value="Create Ticket" />
@@ -250,6 +258,7 @@ UserRole.ADMINISTRATOR %}
       <th>Updated at</th>
       <th>Closed at</th>
       <th>Status</th>
+      <th>Priority</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -271,6 +280,7 @@ UserRole.ADMINISTRATOR %}
         '-' }}
       </td>
       <td>{{ ticket.status.value.capitalize() }}</td>
+      <td>{{ticket.priority.value.capitalize()}}</td>
       <td>
         <form
           action="{{ url_for('ticket.ticket_delete', id=ticket.id) }}"
@@ -290,41 +300,96 @@ UserRole.ADMINISTRATOR %}
   </tbody>
 </table>
 
+
+<hr>
+
+
+<form
+  style="border: 1px solid black; width: fit-content"
+  action="{{url_for('ticket.ticket_comment')}}"
+  method="post"
+>
+
+  <select name="ticket_id" id="ticket_id">
+    {% for ticket in ticket_list %}
+      <option value="{{ticket.id}}">{{ticket.subject}}</option>
+    {% endfor %}
+  </select>
+
+  <textarea name="comment" id="comment"></textarea>
+
+  <input type="checkbox" name="is_internal" id="is_internal">
+
+  <input type="submit" value="Send">
+
+</form>
+
+
+
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const departmentSelect = document.getElementById("ticket_department_id");
     const categorySelect = document.getElementById("ticket_category_id");
 
-    if (departmentSelect && categorySelect) {
-      departmentSelect.addEventListener("change", function () {
-        const departmentId = this.value;
-
-        categorySelect.innerHTML =
-          '<option value="" disabled selected>Select Category</option>';
-
-        if (departmentId) {
-          let baseUrl = "/get_categories_by_department/0";
-          let fetchUrl = baseUrl.replace("0", departmentId);
-
-          fetch(fetchUrl)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Error on network: " + response.status);
-              }
-              return response.json();
-            })
-            .then((data) => {
-              data.forEach((category) => {
-                const option = document.createElement("option");
-                option.value = category.id;
-                option.textContent = category.name;
-                categorySelect.appendChild(option);
-              });
-            });
-        }
-      });
+    if (!departmentSelect || !categorySelect) {
+        console.error("Department or Category select not found.");
+        return;
     }
-  });
+
+    departmentSelect.addEventListener("change", async (event) => {
+        const departmentId = event.target.value;
+
+        categorySelect.disabled = true;
+        categorySelect.innerHTML =
+            '<option value="" selected>Loading categories...</option>';
+
+        try {
+            const response = await fetch(`/get_categories/${departmentId}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const categories = await response.json();
+
+            categorySelect.innerHTML = "";
+
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Select Category";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            categorySelect.appendChild(defaultOption);
+
+            if (categories.length === 0) {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "No categories available";
+                option.disabled = true;
+                categorySelect.appendChild(option);
+            } else {
+                categories.forEach(({ id, name }) => {
+                    const option = document.createElement("option");
+                    option.value = id;
+                    option.textContent = name;
+                    categorySelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error("Failed to load categories:", error);
+
+            categorySelect.innerHTML =
+                '<option value="" selected>Unable to load categories</option>';
+        } finally {
+            categorySelect.disabled = false;
+        }
+    });
+});
 </script>
 
 {% endblock %}
