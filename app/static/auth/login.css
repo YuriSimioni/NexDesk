@@ -1,0 +1,151 @@
+form {
+	width: min(90vw, 400px);
+	height: fit-content;
+	background: white;
+	padding: 32px 28px;
+	border-radius: 24px;
+	border: 1px solid var(--border-color);
+	box-shadow:
+		0 8px 24px rgba(0, 0, 0, 0.08),
+		0 2px 6px rgba(0, 0, 0, 0.04);
+	box-sizing: border-box;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 15px;
+
+	& div.top-section {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+		width: 100%;
+		padding-bottom: 15px;
+		border-bottom: 1px solid var(--border-color);
+
+		& h1 {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			width: 100%;
+			font-size: 1.4em;
+			margin: 0;
+
+			& svg {
+				fill: var(--color-primary);
+				width: 34px;
+				height: 34px;
+				flex-shrink: 0;
+			}
+		}
+		& p {
+			padding-top: 5px;
+			font-size: 0.85em;
+			line-height: 1.4;
+			color: var(--text-light);
+			text-align: center;
+			width: 100%;
+			margin: 0;
+		}
+	}
+
+	& #inputs {
+		width: 100%;
+		height: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		justify-content: center;
+		align-items: center;
+
+		& h3 {
+			width: 100%;
+			height: auto;
+			margin: 0;
+		}
+
+		& .input {
+			width: 100%;
+			height: auto;
+			padding: 10px 14px;
+			border: 1px solid var(--border-color);
+			border-radius: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 10px;
+			box-sizing: border-box;
+			transition:
+				border-color 200ms ease,
+				box-shadow 200ms ease;
+
+			&:focus-within {
+				border-color: var(--color-primary);
+				box-shadow: 0 0 0 3px
+					color-mix(in srgb, var(--color-primary) 15%, transparent);
+			}
+
+			& svg {
+				fill: var(--color-primary);
+				flex-shrink: 0;
+				width: 18px;
+				height: 18px;
+			}
+
+			& input {
+				width: 100%;
+				padding: 0;
+				border: none;
+				outline: none;
+				font-size: 0.9em;
+				background: transparent;
+				color: inherit;
+
+				&::placeholder {
+					color: var(--text-light);
+				}
+			}
+		}
+
+		& label {
+			width: 100%;
+			height: auto;
+			padding: 10px;
+			border-radius: 14px;
+			background: var(--color-primary);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			color: white;
+			font-weight: 600;
+			font-size: 0.9em;
+			cursor: pointer;
+			border: 3px solid transparent;
+			transition:
+				background 200ms ease,
+				transform 150ms ease;
+
+			&:hover {
+				background: var(--color-primary-hover);
+			}
+			&:active {
+				transform: scale(0.98);
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	form {
+		width: 92vw;
+		padding: 24px 20px;
+		border-radius: 20px;
+	}
+}
