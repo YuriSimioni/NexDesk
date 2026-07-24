@@ -87,7 +87,7 @@ def home():
     user_tickets = TicketService.get_user_tickets(current_user.id)
     all_tickets = TicketService.get_tickets()
     user_departments = UserService.get_assigned_departments(current_user.id)
-    
+
     return render_template(
         "home.html",
         department_list=all_departments,
@@ -95,7 +95,7 @@ def home():
         user_list=all_users,
         user_departments=user_departments,
         user_tickets=user_tickets,
-        ticket_list=all_tickets
+        ticket_list=all_tickets,
     )
 
 

@@ -120,6 +120,10 @@ class TicketService:
 
         # Verify if ticket exists
         ticket: Ticket = TicketService.ticket_exists(id=id)
+        
+        # Verify if ticket already closed
+        if ticket.closed_at != None:
+            raise TicketServiceError("Ticket already close")
 
         # Add timestamp ticket close
         ticket.closed_at = datetime.now(timezone.utc)
