@@ -44,7 +44,7 @@ def create_ticket():
             db.session.commit()
 
             # Return feedback user
-            flash("Ticket create successfully")
+            flash("Ticket create successfully", "success")
         except TicketServiceError as e:
             flash(f"{e}", "error")
 
@@ -62,7 +62,7 @@ def ticket_delete(id: int):
         TicketService.delete_ticket(id)
 
         # Return feedback for user
-        flash(f"User has ben unassigned")
+        flash(f"User has ben unassigned", "success")
 
     except TicketServiceError as e:
         # Return feedback for user
@@ -82,7 +82,7 @@ def ticket_close(id: int):
         TicketService.close_ticket(id)
 
         # Return feedback for user
-        flash(f"Ticket has ben closed")
+        flash(f"Ticket has ben closed", "success")
 
     except TicketServiceError as e:
         # Return feedback for user
@@ -120,7 +120,7 @@ def ticket_comment():
             db.session.commit()
 
             # Return feedback user
-            flash("Comment added successfully")
+            flash("Comment added successfully", "success")
         except TicketServiceError as e:
             flash(f"{e}", "error")
 

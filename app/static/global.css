@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+:root {
+    --bg: white;
+    --bg-off: whitesmoke;
+
+    --color-primary: #0056B3;
+    --color-primary-hover: #1976D2;
+
+    --text: #212529;
+
+    --modal-bg: rgba(0,0,0,0.5);
+
+    --success: #28A745;
+    --success-light: #58c571;
+    --success-hover: #339c4c;
+    
+    --info: #17A2B8;
+    --info-hover: #147c8b;
+    --warning: #f59220;
+    --warning-hover: #d17a16;
+    --error: #DC3545;
+    --error-hover: #ac1b2a;
+    
+}
+
+body {
+    background: var(--bg-off);
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    font-family: "Open Sans";
+}
+.flash-messages {
+    width: fit-content;
+    height: fit-content;
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+
+    & .alert {
+        width: fit-content;
+        padding: 10px 20px;
+        border-radius: 24px;
+        font-size: 0.9em;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        border: 2px solid transparent;
+        animation: fadeout 3s ease-in-out forwards; 
+
+        &.alert-success {
+            background-color: var(--success, #28A745);
+            border-color: var(--success-hover, #218838);
+            color: white;
+        }
+        &.alert-error {
+            background-color: var(--error, #DC3545);
+            border-color: var(--error-hover, #C82333);
+            color: white;
+        }
+        &.alert-warning {
+            background-color: var(--warning, #FFC107);
+            border-color: var(--warning-hover, #E0A800);
+            color: #212529;
+        }
+        &.alert-info {
+            background-color: var(--info, #17A2B8);
+            border-color: var(--info-hover, #138496);
+            color: white;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+#background-loader {
+    width: 100vw;
+    height: 100vh;
+    background: var(--modal-bg);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+    font-weight: bold;
+    display: none;
+    & #loader {
+        width: 50px;
+        height: 50px;
+        border: 7px solid transparent;
+        border-left-color: white;
+        border-right-color: white;
+        border-radius: 50%;
+        animation: loading 1s ease-in-out infinite;
+    }
+}
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
